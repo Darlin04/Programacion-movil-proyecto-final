@@ -94,6 +94,49 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> recoverPassword({
+    required String cedula,
+    required String email,
+  }) async {
+    final url = Uri.parse('${_baseUrl}recuperar_clave.php');
+    try {
+      final response = await http.post(
+        url,
+        body: {
+          'cedula': cedula,
+          'correo': email,
+        },
+      );
+
+       try {
+           final Map<String, dynamic> decodedData = json.decode(response.body);
+           if (response.statusCode == 200) {
+               return decodedData;
+           } else {
+               return {
+                 "exito": false,
+                 "mensaje": "Error de servidor (${response.statusCode}): ${decodedData['mensaje'] ?? response.body}",
+                 "datos": decodedData['datos'] ?? []
+               };
+           }
+       } catch(e) {
+           print("Error decoding recoverPassword response: $e");
+            return {
+              "exito": false,
+              "mensaje": "Respuesta inesperada del servidor (Código ${response.statusCode}): ${response.body}",
+              "datos": []
+            };
+       }
+    } catch (e) {
+      print('Error in recoverPassword request: $e');
+       return {
+         "exito": false,
+         "mensaje": "No se pudo conectar al servidor para recuperar la clave. Verifica tu conexión.",
+         "datos": []
+       };
+    }
+  }
+
   Future<Map<String, dynamic>> changePassword({
     required String token,
     required String oldPassword,
@@ -110,34 +153,35 @@ class ApiService {
         },
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> decodedData = json.decode(response.body);
-        return decodedData;
-      } else {
-         try {
-           final Map<String, dynamic> errorData = json.decode(response.body);
+       try {
+           final Map<String, dynamic> decodedData = json.decode(response.body);
+           if (response.statusCode == 200) {
+               return decodedData;
+           } else {
+               return {
+                 "exito": false,
+                 "mensaje": "Error de servidor (${response.statusCode}): ${decodedData['mensaje'] ?? response.body}",
+                 "datos": decodedData['datos'] ?? []
+               };
+           }
+       } catch (e) {
+            print("Error decoding changePassword response: $e");
             return {
               "exito": false,
-              "mensaje": "Error (${response.statusCode}): ${errorData['mensaje'] ?? response.body}",
+              "mensaje": "Respuesta inesperada del servidor (Código ${response.statusCode}): ${response.body}",
               "datos": []
             };
-         } catch (_) {
-             return {
-               "exito": false,
-               "mensaje": "Error al cambiar contraseña: ${response.statusCode}",
-               "datos": []
-             };
-         }
-      }
+       }
     } catch (e) {
-      print('Error in changePassword: $e');
+      print('Error in changePassword request: $e');
        return {
          "exito": false,
-         "mensaje": "No se pudo conectar al servidor. Verifica tu conexión.",
+         "mensaje": "No se pudo conectar al servidor para cambiar la clave. Verifica tu conexión.",
          "datos": []
        };
     }
   }
+
 
   Future<Map<String, dynamic>> reportSituation({
     required String token,
@@ -161,30 +205,30 @@ class ApiService {
         },
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> decodedData = json.decode(response.body);
-        return decodedData;
-      } else {
-         try {
-           final Map<String, dynamic> errorData = json.decode(response.body);
-            return {
-              "exito": false,
-              "mensaje": "Error (${response.statusCode}): ${errorData['mensaje'] ?? response.body}",
-              "datos": []
-            };
-         } catch (_) {
-             return {
-               "exito": false,
-               "mensaje": "Error al enviar reporte: ${response.statusCode}",
-               "datos": []
-             };
-         }
-      }
+      try {
+           final Map<String, dynamic> decodedData = json.decode(response.body);
+           if (response.statusCode == 200) {
+               return decodedData;
+           } else {
+               return {
+                 "exito": false,
+                 "mensaje": "Error de servidor (${response.statusCode}): ${decodedData['mensaje'] ?? response.body}",
+                 "datos": decodedData['datos'] ?? []
+               };
+           }
+       } catch (e) {
+           print("Error decoding reportSituation response: $e");
+           return {
+             "exito": false,
+             "mensaje": "Respuesta inesperada del servidor (Código ${response.statusCode}): ${response.body}",
+             "datos": []
+           };
+       }
     } catch (e) {
-      print('Error in reportSituation: $e');
+      print('Error in reportSituation request: $e');
        return {
          "exito": false,
-         "mensaje": "No se pudo conectar al servidor. Verifica tu conexión.",
+         "mensaje": "No se pudo conectar al servidor para reportar la situación. Verifica tu conexión.",
          "datos": []
        };
     }
@@ -210,7 +254,7 @@ class ApiService {
            return [];
         }
         else {
-          throw Exception('Error de API al obtener situaciones: ${decodedData['mensaje'] ?? 'Respuesta inesperada o datos inválidos'}');
+           throw Exception('Error de API al obtener situaciones: ${decodedData['mensaje'] ?? 'Respuesta inesperada o datos inválidos'}');
         }
       } else {
          try {
@@ -252,7 +296,6 @@ class ApiService {
       throw Exception('No se pudieron obtener los servicios: ${e.toString().replaceFirst('Exception: ', '')}');
     }
   }
-
 
   Future<List<NewsItem>> fetchNews() async {
     final url = Uri.parse('${_baseUrl}noticias.php');
