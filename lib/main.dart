@@ -1,13 +1,17 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'screens/home_page.dart';
 import 'screens/login_page.dart';
 import 'screens/forgot_password_page.dart';
+import 'screens/change_password_page.dart'; 
 import 'screens/report_situation_page.dart';
 import 'screens/my_situations_page.dart';
+import 'screens/situations_map_page.dart'; 
 import 'screens/video_page.dart';
 import 'screens/news_page.dart';
+import 'screens/services_page.dart';
 import 'screens/videos_page.dart';
 import 'screens/albergues_page.dart';
 import 'screens/albergues_map_page.dart';
@@ -83,11 +87,14 @@ class MyApp extends StatelessWidget {
       HomePage.routeName: (ctx) => HomePage(),
       LoginPage.routeName: (ctx) => const LoginPage(),
       ForgotPasswordPage.routeName: (ctx) => const ForgotPasswordPage(),
+      ChangePasswordPage.routeName: (ctx) => const ChangePasswordPage(), 
 
       ReportSituationPage.routeName: (ctx) => const ReportSituationPage(),
       MySituationsPage.routeName: (ctx) => const MySituationsPage(),
+      SituationsMapPage.routeName: (ctx) => const SituationsMapPage(), 
 
       NewsPage.routeName: (ctx) => const NewsPage(),
+      ServicesPage.routeName: (ctx) => const ServicesPage(),
       VideoPage.routeName: (ctx) => const VideoPage(),
       VideosPage.routeName: (ctx) => const VideosPage(),
       AlberguesPage.routeName: (ctx) => const AlberguesPage(),
